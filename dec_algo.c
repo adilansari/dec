@@ -1,12 +1,6 @@
 #include	<stdio.h>
 #include	<stdlib.h>
 #include	<string.h>
-#include	<ctype.h>
-#include	<sys/types.h>
-#include	<sys/socket.h>
-#include	<netdb.h>
-#include	<netinet/in.h>
-#include	<inttypes.h>
 
 
 //functions declaration:-
@@ -32,7 +26,6 @@ struct Start {
 };
 
 struct Node *root; // starting from first element this will have all the elements that have been added to the graph
-int rootflag=0;
 struct Start first; //will contain the unique starting characters for the graph.. NO NEED FOR THIS
 struct Start traversed; //will contain a list of all the elements traversed while looking up for an element
 
@@ -48,50 +41,40 @@ void insert(char a, char b) {
 			cNode= getNode(root,b);
 		else
 			cNode= createNode(root, b);
-		printf("%c %c", pNode->data, cNode->data);
+	printf("%c %c", pNode->data, cNode->data);
 	pNode->child[(pNode->cindex)++] = b;
 	cNode->parent[(cNode->pindex)++]= a;
 }
 
 struct Node *createNode(struct Node *node, char nodeData) {
-	printf("createNode");
-	if(root==NULL) {
+	if(root == NULL) {
 		node= malloc(sizeof(struct Node));
 		node->data = nodeData;
-		node->next= NULL;
 		node->pindex=0;
 		node->cindex=0;
+		node->next= malloc(sizeof(struct Node));
 		root=node;
 		return node;
 	}
-	else if (node == NULL){
-		node->next= malloc(sizeof(struct Node));
-		node= node->next;
+	else if (node->data == 0) {
 		node->data = nodeData;
-		node->next= NULL;
 		node->pindex=0;
 		node->cindex=0;
+		node->next= malloc(sizeof(struct Node));
 		return node;
 	}
-	else {
+	else
 		return createNode(node->next, nodeData);
-	}
 }
 
 //lookup for a element in a particular subgraph to assist QUERY
-int lookup(struct Start *first, char data) {
-	char c= first->data;
-	//get Node for first.data
-	int i=0;
-	if(c == data) {
-		return 1;
-	}
-	else {
-		for(i=0;i++;i<50) {
-
-		}
-	}
-	return 1;
+String query(char a, char b) {
+	if(!hasNode(root, a))
+		return "Event not found:" + a;
+	if(!hasNode(root,b))
+		return "Event not found:" + b;
+	else
+		return queryHelper(a,b);
 }
 
 //look if graph has Node
@@ -116,17 +99,19 @@ struct Node *getNode(struct Node *root, char data) {
 // print the whole graph
 void printGraph(struct Node *root) {
 	int count=0;
-	while(root != NULL) {
+	while(root->data != 0) {
 		printf("\n Node data= %c", root->data);
 		printf("\n Node pindex= %d , cindex= %d", root->pindex, root->cindex);
 		printf("\n parent Nodes: ");
-		for(count=0;count<50;count++) {
-			printf("%c,", root->parent[count]);
+		while(root->parent[count] !=0) {
+			printf("%c,", root->parent[count++]);
 		}
+		count=0;
 		printf("\n Child Nodes: ");
-		for(count=0;count<50;count++) {
-			printf("%c,", root->child[count]);
-		}
+		while(root->child[count] !=0) {
+			printf("%c,", root->child[count++]);
+			}
+		count=0;
 		root= root->next;
 	}
 	printf("\n -------- END ---------");
@@ -137,7 +122,7 @@ void printGraph(struct Node *root) {
 	 printGraph(root);
 	 insert('B','C');
 	 printGraph(root);
-	 insert('D','E');
+	 insert('A','C');
 	 printGraph(root);
 	 return 0;
  }
