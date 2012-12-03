@@ -26,9 +26,33 @@ struct Start {
 };
 
 struct Node *root; // starting from first element this will have all the elements that have been added to the graph
-struct Start first; //will contain the unique starting characters for the graph.. NO NEED FOR THIS
-struct Start traversed; //will contain a list of all the elements traversed while looking up for an element
+//struct Start first; //will contain the unique starting characters for the graph.. NO NEED FOR THIS
+int queryHelperChildFlag=0;
 
+struct Start *createFirst(struct Start *first, char data) {
+	first= malloc(sizeof(struct Start));
+	first->data= data;
+	first->next=malloc(sizeof(struct Start));
+	return first;
+}
+struct Start *appendFirst(struct Start *first, char data) {
+	if(first->data ==0) {
+		first->data=data;
+		first->next=malloc(sizeof(struct start));
+		return first;
+	}
+	else
+		return appendFirst(first->next, data);
+}
+int isTraversed(struct Start *first, char data) {
+	while(first != NULL) {
+		if (first->data == data)
+			return 1;
+		else
+			first=first->next;
+	}
+	return 0;
+}
 void insert(char a, char b) {
 	struct Node *pNode, *cNode;
 		if (hasNode(root,a))
@@ -67,14 +91,63 @@ struct Node *createNode(struct Node *node, char nodeData) {
 		return createNode(node->next, nodeData);
 }
 
-//lookup for a element in a particular subgraph to assist QUERY
-String query(char a, char b) {
+void queryCatcher(char a, char b) {
+	int result=query(a,b);
+	switch(result) {
+	case 0:
+		printf("%c concurrent to %c", a,b);
+		break;
+	case 1:
+		printf("%c happened before %c", a,b);
+		break;
+	case 2:
+		printf("%c happened before %c", b,a);
+		break;
+	case 3:
+		printf("Event not found: %c",a);
+		break;
+	case 4:
+		printf("Event not found: %c",b);
+		break;
+	}
+}
+
+//lookup for a element in a particular subgraph to assist QUERY and create a void querycatcher
+int query(char a, char b) {
 	if(!hasNode(root, a))
-		return "Event not found:" + a;
+		return 3;
 	if(!hasNode(root,b))
-		return "Event not found:" + b;
+		return 4;
+	else if (qhc(a,b))
+		return 1;
+	else if (qhc(b,a))
+		return 2;
 	else
-		return queryHelper(a,b);
+		return 0;
+}
+
+int qhc(char a, char b) {
+	queryHelperChildFlag=0;
+	struct Start traverse= createFirst(traverse,a);//create traversednodes
+	queryHelperChild(a,b);
+	return queryHelperChildFlag;
+}
+
+//search if a has a child as b down the graph somewhere
+void queryHelperChild(struct Start *traverse,char a, char b) {
+	if(isTraversed(traverse,a))
+		return;
+	else
+		traverse= appendFirst(traverse,a);
+	//do the following when this node is not already traversed once
+	int i=0;
+	struct Node aNode = getNode(root,a);
+	while(aNode->child[i] != 0) {
+		if(aNode->child[i] == b)
+			queryHelperChildFlag= 1;
+		else
+			queryHelper(aNode.child[i++],b);
+	}
 }
 
 //look if graph has Node
