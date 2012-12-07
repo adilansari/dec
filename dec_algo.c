@@ -9,15 +9,23 @@ struct Node *createNode(struct Node *root, char nodeData);
 int hasNode(struct Node *root, char data);
 struct Node *getNode(struct Node *root, char data);
 void printGraph(struct Node *root);
+int query(char a, char b);
+struct Start *createFirst(struct Start *first, char data);
+int isTraversed(struct Start *first, char data);
+void appendFirst(struct Start *first, char data);
+void queryCatcher(char a, char b);
+int query(char a, char b);
+int qhc(char a, char b);
+void queryHelperChild(struct Start *traverse, char a, char b);
 
 //suppose i am getting strings over here
 struct Node {
 	char data;
-	char parent[50];
-	char child[50];
 	struct Node *next;
 	int pindex;
 	int cindex;
+	char parent[50];
+	char child[50];
 };
 
 struct Start {
@@ -26,8 +34,8 @@ struct Start {
 };
 
 struct Node *root; // starting from first element this will have all the elements that have been added to the graph
-//struct Start first; //will contain the unique starting characters for the graph.. NO NEED FOR THIS
-int queryHelperChildFlag=0;
+//struct Start *first; //will contain the unique starting characters for the graph.. NO NEED FOR THIS
+int queryHelperChildFlag=0, isTraversedFlag=0;
 
 struct Start *createFirst(struct Start *first, char data) {
 	first= malloc(sizeof(struct Start));
@@ -35,14 +43,13 @@ struct Start *createFirst(struct Start *first, char data) {
 	first->next=malloc(sizeof(struct Start));
 	return first;
 }
-struct Start *appendFirst(struct Start *first, char data) {
+void appendFirst(struct Start *first, char data) {
 	if(first->data ==0) {
 		first->data=data;
-		first->next=malloc(sizeof(struct start));
-		return first;
-	}
+		first->next=malloc(sizeof(struct Start));
+		}
 	else
-		return appendFirst(first->next, data);
+		appendFirst(first->next, data);
 }
 int isTraversed(struct Start *first, char data) {
 	while(first != NULL) {
@@ -66,14 +73,26 @@ void insert(char a, char b) {
 		else
 			cNode= createNode(root, b);
 	printf("%c %c", pNode->data, cNode->data);
-	pNode->child[(pNode->cindex)++] = b;
-	cNode->parent[(cNode->pindex)++]= a;
+	pNode->child[(pNode->cindex)] = b;
+	pNode->cindex++;
+	//pNode->child[++(pNode->cindex)]= '\0';
+	cNode->parent[(cNode->pindex)]= a;
+	cNode->pindex++;
+	//cNode->parent[++(cNode->pindex)]= '\0';
+	//free(pNode);
+	//free(cNode);
 }
 
 struct Node *createNode(struct Node *node, char nodeData) {
 	if(root == NULL) {
+		int i=0;
 		node= malloc(sizeof(struct Node));
 		node->data = nodeData;
+		while(i<50) {
+			node->parent[i]= '\0';
+			node->child[i]= '\0';
+			i++;
+		}
 		node->pindex=0;
 		node->cindex=0;
 		node->next= malloc(sizeof(struct Node));
@@ -81,7 +100,13 @@ struct Node *createNode(struct Node *node, char nodeData) {
 		return node;
 	}
 	else if (node->data == 0) {
+		int j=0;
 		node->data = nodeData;
+		while (j<50) {
+			node->parent[j]= '\0';
+			node->child[j]= '\0';
+			j++;
+		}
 		node->pindex=0;
 		node->cindex=0;
 		node->next= malloc(sizeof(struct Node));
@@ -95,19 +120,19 @@ void queryCatcher(char a, char b) {
 	int result=query(a,b);
 	switch(result) {
 	case 0:
-		printf("%c concurrent to %c", a,b);
+		printf("%c concurrent to %c\n", a,b);
 		break;
 	case 1:
-		printf("%c happened before %c", a,b);
+		printf("%c happened before %c\n", a,b);
 		break;
 	case 2:
-		printf("%c happened before %c", b,a);
+		printf("%c happened before %c\n", b,a);
 		break;
 	case 3:
-		printf("Event not found: %c",a);
+		printf("Event not found: %c\n",a);
 		break;
 	case 4:
-		printf("Event not found: %c",b);
+		printf("Event not found: %c\n",b);
 		break;
 	}
 }
@@ -128,25 +153,31 @@ int query(char a, char b) {
 
 int qhc(char a, char b) {
 	queryHelperChildFlag=0;
-	struct Start traverse= createFirst(traverse,a);//create traversednodes
-	queryHelperChild(a,b);
+	isTraversedFlag=0;
+	struct Start *traverse= createFirst(traverse,a);//create traversednodes
+	queryHelperChild(traverse,a,b);
+	free(traverse);
 	return queryHelperChildFlag;
 }
 
 //search if a has a child as b down the graph somewhere
-void queryHelperChild(struct Start *traverse,char a, char b) {
-	if(isTraversed(traverse,a))
+void queryHelperChild(struct Start *traverse, char a, char b) {
+	if(isTraversed(traverse,a) && isTraversedFlag==1)
 		return;
-	else
-		traverse= appendFirst(traverse,a);
+	else {
+		appendFirst(traverse,a);
+		isTraversedFlag=1;
+	}
 	//do the following when this node is not already traversed once
 	int i=0;
-	struct Node aNode = getNode(root,a);
+	struct Node *aNode = getNode(root,a);
 	while(aNode->child[i] != 0) {
-		if(aNode->child[i] == b)
+		if(aNode->child[i] == b) {
 			queryHelperChildFlag= 1;
+			return;
+		}
 		else
-			queryHelper(aNode.child[i++],b);
+			queryHelperChild(traverse,(aNode->child[i++]),b);
 	}
 }
 
@@ -187,15 +218,28 @@ void printGraph(struct Node *root) {
 		count=0;
 		root= root->next;
 	}
-	printf("\n -------- END ---------");
+	printf("\n -------- END ---------\n");
 }
 //a function to check if a request is valid
  int main() {
 	 insert('A','B');
-	 printGraph(root);
 	 insert('B','C');
-	 printGraph(root);
+	 insert('D','E');
+	 insert('C','D');
 	 insert('A','C');
+	 insert('B','D');
+	 insert('E','F');
+	 insert('A','F');
+	 insert('G','E');
+	 insert('H','A');
+	 insert('H','B');
 	 printGraph(root);
+	 queryCatcher('A','F');
+	 queryCatcher('B','G');
+	 queryCatcher('A','E');
+ 	 queryCatcher('A','H');
+ 	 queryCatcher('B','H');
+ 	 queryCatcher('A','P');
+ 	 free(root);
 	 return 0;
  }
