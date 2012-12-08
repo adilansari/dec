@@ -2,7 +2,6 @@
 #include	<stdlib.h>
 #include	<string.h>
 
-
 //functions declaration:-
 void insert(char a, char b);
 struct Node *createNode(struct Node *root, char nodeData);
@@ -17,6 +16,8 @@ void queryCatcher(char a, char b);
 int query(char a, char b);
 int qhc(char a, char b);
 void queryHelperChild(struct Start *traverse, char a, char b);
+void deallocateFirst(struct Start *phead);
+void deallocateNode(struct Node *phead);
 
 //suppose i am getting strings over here
 struct Node {
@@ -40,17 +41,20 @@ int queryHelperChildFlag=0, isTraversedFlag=0;
 struct Start *createFirst(struct Start *first, char data) {
 	first= malloc(sizeof(struct Start));
 	first->data= data;
-	first->next=malloc(sizeof(struct Start));
+	first->next=NULL;
 	return first;
 }
 void appendFirst(struct Start *first, char data) {
-	if(first->data ==0) {
-		first->data=data;
+	if(first->next == NULL) {
 		first->next=malloc(sizeof(struct Start));
+		first= first->next;
+		first->data=data;
+		first->next= NULL;
 		}
 	else
 		appendFirst(first->next, data);
 }
+
 int isTraversed(struct Start *first, char data) {
 	while(first != NULL) {
 		if (first->data == data)
@@ -60,6 +64,27 @@ int isTraversed(struct Start *first, char data) {
 	}
 	return 0;
 }
+
+void deallocateFirst(struct Start *phead) {
+	//struct Start *head= phead;
+	while(phead != NULL) {
+		struct Start *temp= phead;
+		phead= phead->next;
+		free(temp);
+	}
+	phead= NULL;
+}
+
+void deallocateNode(struct Node *phead) {
+	//struct Start *head= phead;
+	while(phead != NULL) {
+		struct Node *temp= phead;
+		phead= phead->next;
+		free(temp);
+	}
+	root= NULL;
+}
+
 void insert(char a, char b) {
 	struct Node *pNode, *cNode;
 		if (hasNode(root,a))
@@ -95,12 +120,14 @@ struct Node *createNode(struct Node *node, char nodeData) {
 		}
 		node->pindex=0;
 		node->cindex=0;
-		node->next= malloc(sizeof(struct Node));
+		node->next= NULL;//malloc(sizeof(struct Node));
 		root=node;
 		return node;
 	}
-	else if (node->data == 0) {
+	else if (node->next == NULL) {
 		int j=0;
+		node->next= malloc(sizeof(struct Node));
+		node= node->next;
 		node->data = nodeData;
 		while (j<50) {
 			node->parent[j]= '\0';
@@ -109,7 +136,7 @@ struct Node *createNode(struct Node *node, char nodeData) {
 		}
 		node->pindex=0;
 		node->cindex=0;
-		node->next= malloc(sizeof(struct Node));
+		node->next= NULL;
 		return node;
 	}
 	else
@@ -156,7 +183,8 @@ int qhc(char a, char b) {
 	isTraversedFlag=0;
 	struct Start *traverse= createFirst(traverse,a);//create traversednodes
 	queryHelperChild(traverse,a,b);
-	free(traverse);
+	deallocateFirst(traverse);
+	traverse= NULL;
 	return queryHelperChildFlag;
 }
 
@@ -203,7 +231,7 @@ struct Node *getNode(struct Node *root, char data) {
 // print the whole graph
 void printGraph(struct Node *root) {
 	int count=0;
-	while(root->data != 0) {
+	while(root != NULL) {
 		printf("\n Node data= %c", root->data);
 		printf("\n Node pindex= %d , cindex= %d", root->pindex, root->cindex);
 		printf("\n parent Nodes: ");
@@ -221,25 +249,26 @@ void printGraph(struct Node *root) {
 	printf("\n -------- END ---------\n");
 }
 //a function to check if a request is valid
- int main() {
-	 insert('A','B');
-	 insert('B','C');
-	 insert('D','E');
-	 insert('C','D');
-	 insert('A','C');
-	 insert('B','D');
-	 insert('E','F');
-	 insert('A','F');
-	 insert('G','E');
-	 insert('H','A');
-	 insert('H','B');
-	 printGraph(root);
-	 queryCatcher('A','F');
-	 queryCatcher('B','G');
-	 queryCatcher('A','E');
- 	 queryCatcher('A','H');
- 	 queryCatcher('B','H');
- 	 queryCatcher('A','P');
- 	 free(root);
-	 return 0;
- }
+
+int other() {
+	insert('A','B');
+	insert('B','C');
+	insert('D','E');
+	insert('C','D');
+	insert('A','C');
+	insert('B','D');
+	insert('E','F');
+	insert('A','F');
+	insert('G','E');
+	insert('H','A');
+	insert('H','B');
+	//printGraph(root);
+	queryCatcher('A','F');
+	queryCatcher('B','G');
+	queryCatcher('A','E');
+	queryCatcher('A','H');
+	queryCatcher('B','H');
+	queryCatcher('A','P');
+	deallocateNode(root);
+	return 0;
+}
