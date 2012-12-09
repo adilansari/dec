@@ -82,7 +82,7 @@ void deallocateNode(struct Node *phead) {
 		phead= phead->next;
 		free(temp);
 	}
-	root= NULL;
+	phead= NULL;
 }
 
 void insert(char a, char b) {
@@ -91,7 +91,6 @@ void insert(char a, char b) {
 			pNode= getNode(root,a);
 		else {
 			pNode= createNode(root,a);
-			//addToFirst(one); No need as we already have list of all elements
 		}
 		if (hasNode(root, b))
 			cNode= getNode(root,b);
@@ -100,12 +99,8 @@ void insert(char a, char b) {
 	printf("%c %c", pNode->data, cNode->data);
 	pNode->child[(pNode->cindex)] = b;
 	pNode->cindex++;
-	//pNode->child[++(pNode->cindex)]= '\0';
 	cNode->parent[(cNode->pindex)]= a;
 	cNode->pindex++;
-	//cNode->parent[++(cNode->pindex)]= '\0';
-	//free(pNode);
-	//free(cNode);
 }
 
 struct Node *createNode(struct Node *node, char nodeData) {
@@ -232,14 +227,14 @@ struct Node *getNode(struct Node *root, char data) {
 void printGraph(struct Node *root) {
 	int count=0;
 	while(root != NULL) {
-		printf("\n Node data= %c", root->data);
-		printf("\n Node pindex= %d , cindex= %d", root->pindex, root->cindex);
-		printf("\n parent Nodes: ");
+		printf("\n\n Node= %c", root->data);
+		printf("\n pindex= %d , cindex= %d", root->pindex, root->cindex);
+		printf("\n parent: ");
 		while(root->parent[count] !=0) {
 			printf("%c,", root->parent[count++]);
 		}
 		count=0;
-		printf("\n Child Nodes: ");
+		printf("\n Child: ");
 		while(root->child[count] !=0) {
 			printf("%c,", root->child[count++]);
 			}
@@ -269,6 +264,11 @@ int other() {
 	queryCatcher('A','H');
 	queryCatcher('B','H');
 	queryCatcher('A','P');
-	deallocateNode(root);
+	//deallocateNode(root);
 	return 0;
+}
+
+void reset() {
+	deallocateNode(root);
+	root =NULL;
 }
