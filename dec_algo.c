@@ -12,7 +12,7 @@ int query(char a, char b);
 struct Start *createFirst(struct Start *first, char data);
 int isTraversed(struct Start *first, char data);
 void appendFirst(struct Start *first, char data);
-void queryCatcher(char a, char b);
+char * queryCatcher(char a, char b);
 int query(char a, char b);
 int qhc(char a, char b);
 void queryHelperChild(struct Start *traverse, char a, char b);
@@ -96,7 +96,7 @@ void insert(char a, char b) {
 			cNode= getNode(root,b);
 		else
 			cNode= createNode(root, b);
-	printf("%c %c", pNode->data, cNode->data);
+///	printf("%c %c", pNode->data, cNode->data);
 	pNode->child[(pNode->cindex)] = b;
 	pNode->cindex++;
 	cNode->parent[(cNode->pindex)]= a;
@@ -138,25 +138,41 @@ struct Node *createNode(struct Node *node, char nodeData) {
 		return createNode(node->next, nodeData);
 }
 
-void queryCatcher(char a, char b) {
+char * queryCatcher(char a, char b) {
 	int result=query(a,b);
+	char buf[500];
 	switch(result) {
 	case 0:
+		buf[0]= a;
+		strcat(buf," concurrent to ");
+		buf[strlen(buf)]= b;
 		printf("%c concurrent to %c\n", a,b);
 		break;
 	case 1:
+		buf[0]= a;
+		strcat(buf," happened before ");
+		buf[strlen(buf)]= b;
 		printf("%c happened before %c\n", a,b);
 		break;
 	case 2:
+		buf[0]= b;
+		strcat(buf," happened before ");
+		buf[strlen(buf)]= a;
 		printf("%c happened before %c\n", b,a);
 		break;
 	case 3:
+		strcat(buf, "Event Not Found :");
+		buf[strlen(buf)]= a;
 		printf("Event not found: %c\n",a);
 		break;
 	case 4:
+		strcat(buf, "Event Not Found :");
+		buf[strlen(buf)]= b;
 		printf("Event not found: %c\n",b);
 		break;
 	}
+	char *newbuf= buf;
+	return newbuf;
 }
 
 //lookup for a element in a particular subgraph to assist QUERY and create a void querycatcher

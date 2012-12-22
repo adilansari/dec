@@ -1,15 +1,17 @@
+#include	<stdio.h>
+#include	<stdlib.h>
+#include	<string.h>
 #include "dec_algo.c"
 
 //functions
-void rqstList(char *rqst);
+char * rqstList(char *rqst);
 void tokenize(char *str);
-int tokenizer(char *token);
+char * tokenizer(char *token);
 void createrList(char a,char b);
 void deallocaterList();
 int initialCheck();
 int finalcheck();
-void queryCatcherPro(char *s);
-void rqstList(char *request);
+char * queryCatcherPro(char *s);
 void insertCopy(char a, char b);
 struct Node *createNodeCopy(struct Node *node, char nodeData);
 struct Node *CopyRoot(struct Node *orig, struct Node *duplicate);
@@ -61,44 +63,58 @@ void createrList(char ch1, char ch2) {
 void tokenize(char *str){
 	char s[512];
 	strcpy(s, str);
-	int output;
+	char * output;
 	char *token = strtok(s,";");
+	printf("\nIncoming String = %s", str);
+	//char *newstr= "response from server: ";
 	while (token) {
-		output= tokenizer(token);
+		char *temp = token;
+		output= tokenizer(temp);
 		token= strtok(NULL,";");
 	}
+	//return newstr;
+//	printf("%s",output);
 }
 
 //to separate insert and query commands
-int tokenizer(char *token) {
+char * tokenizer(char *token) {
+	if(token == '\0' || token == '\n') {
+			return "";
+		}
+	printf("\n Request = %s \n", token);
+
 	if (strstr(token,ins)) {
-		rqstList(token); //create a linkedlist of all the insert requests
+		return rqstList(token); //create a linkedlist of all the insert requests
 		printGraph(root);
 	}
 	else if(strstr(token,q)) {
 		//do handle this query over here
-		queryCatcherPro(token);
+		return queryCatcherPro(token);
 	}
 	else if(strstr(token,res)) {
 		reset();
-		printf("\nReset Done");
+		printf("\n RESET DONE");
+		return "RESET DONE";
 	}
 	else {
-		printf("\ninvalid command");
+		printf("\n INVALID COMMAND");
+		return "INVALID COMMAND";
 	}
-	return 0;
+	return "";
 }
 
-void queryCatcherPro(char *s) {
+char * queryCatcherPro(char *s) {
 	int i=0;
 	for (i=0; i<strlen(s);i++) {
 		if((s[i]>64) && (s[i]<91) && (s[i+1]== 32)) {
-			queryCatcher(s[i], s[i+2]);
+			return queryCatcher(s[i], s[i+2]);
 		}
 	}
+	return "\0";
 }
 
-void rqstList(char *request) {
+char * rqstList(char *request) {
+	char * ret;
 	int i=0;
 	for(i=0; i<=strlen(request); i++) {
 		if(request[i] == '>') {
@@ -109,15 +125,19 @@ void rqstList(char *request) {
 		while(rList != NULL) {
 			insert(rList->a, rList->b);//push requests into the main data structure
 		rList= rList->next;
-		printf("\n insertion done");
+		printf("\n INSERTION DONE");
+		ret= "\n INSERTION DONE";//printf("\n insertion done");
 		}
 	}
 	else {
+		ret= "\n INSERTION FAILED";
 		printf("\n insertion failed");
+		//return 2;
 	}
 	deallocateNode(copy);
 	copy= NULL;
 	deallocaterList();
+	return ret;
 }
 
 int initialCheck() {
@@ -204,7 +224,7 @@ void insertCopy(char a, char b){
 				cNode= getNode(copy,b);
 			else
 				cNode= createNodeCopy(copy, b); //change here
-		printf("%c %c", pNode->data, cNode->data);
+		//printf("%c %c", pNode->data, cNode->data);
 		pNode->child[(pNode->cindex)] = b;
 		pNode->cindex++;
 		cNode->parent[(cNode->pindex)]= a;
@@ -291,12 +311,15 @@ void deallocaterList() {
 	rList=NULL;
 }
 
-int main() {
+/*int main() {
 	 //other();
 	int k=0;
-		char str[256];
-		printf("\nCommand:");
-		scanf("%80[^\r\n]", str);
-		tokenize(str);
-	 return 0;
+	char str[256];
+	for(k=0;k<20;k++) {
+	printf("\nInput your command:");
+	gets(str);
+	tokenize(str);
+	}
+	return 0;
 }
+*/
