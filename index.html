@@ -1,51 +1,44 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=640" />
-
-    <link rel="stylesheet" href="stylesheets/core.css" media="screen"/>
-    <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-device-width:640px)"/>
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
-
-    <script type="text/javascript" src="javascripts/modernizr.js"></script>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script type="text/javascript" src="javascripts/headsmart.min.js"></script>
-    <script type="text/javascript">
-      $(document).ready(function () {
-        $('#main_content').headsmart()
-      })
-    </script>
     <title>Distributed Event Coordination System by adilansari</title>
-  </head>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/main.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
+  </head>
   <body>
-    <a id="forkme_banner" href="https://github.com/adilansari/dec">View on GitHub</a>
-    <div class="shell">
 
       <header>
-        <span class="ribbon-outer">
-          <span class="ribbon-inner">
-            <h1>Distributed Event Coordination System</h1>
-            <h2>Simulation of distributed event coordinating graph.</h2>
-          </span>
-          <span class="left-tail"></span>
-          <span class="right-tail"></span>
-        </span>
+        <h1>Distributed Event Coordination System</h1>
+        <p>Simulation of distributed event coordinating graph.</p>
       </header>
 
-      <section id="downloads">
-        <span class="inner">
-          <a href="https://github.com/adilansari/dec/zipball/master" class="zip"><em>download</em> .ZIP</a><a href="https://github.com/adilansari/dec/tarball/master" class="tgz"><em>download</em> .TGZ</a>
-        </span>
-      </section>
+      <div id="banner">
+        <span id="logo"></span>
 
+        <a href="https://github.com/adilansari/dec" class="button fork"><strong>View On GitHub</strong></a>
+        <div class="downloads">
+          <span>Downloads:</span>
+          <ul>
+            <li><a href="https://github.com/adilansari/dec/zipball/master" class="button">ZIP</a></li>
+            <li><a href="https://github.com/adilansari/dec/tarball/master" class="button">TAR</a></li>
+          </ul>
+        </div>
+      </div><!-- end banner -->
 
-      <span class="banner-fix"></span>
-
-
-      <section id="main_content">
+    <div class="wrapper">
+      <nav>
+        <ul></ul>
+      </nav>
+      <section>
         <h1>Distributed Event Coordination System “dec” in C on a UNIX-based platform.</h1>
 
 <p>This system will consist of a DEC server which can interact and communicate with multiple DEC clients at the same time.</p>
@@ -128,22 +121,21 @@ dec_client1$ _
 </ul><h3>DESCRIPTION:</h3>
 
 <p><em>dec_client</em> is the client component of the Distributed Event Coordination (DEC) System. It will connect to the DEC server running on particular host and port number and will send the server one of the three requests mentioned above.</p>
+
+<hr><h2>Contact</h2>
+
+<ul>
+<li><a href="mailto:%20me@adilansari.com">E-mail</a></li>
+<li><a href="http://twitter.com/adilansari">@adilansari</a></li>
+<li><a href="http://www.adilansari.com">HomePage</a></li>
+</ul>
       </section>
-
       <footer>
-        <span class="ribbon-outer">
-          <span class="ribbon-inner">
-            <p>this project by <a href="https://github.com/adilansari">adilansari</a> can be found on <a href="https://github.com/adilansari/dec">GitHub</a></p>
-          </span>
-          <span class="left-tail"></span>
-          <span class="right-tail"></span>
-        </span>
-        <p>Generated with <a href="http://pages.github.com">GitHub Pages</a> using Merlot</p>
-        <span class="octocat"></span>
+        <p>Project maintained by <a href="https://github.com/adilansari">adilansari</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></small></p>
       </footer>
-
     </div>
-
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
     
   </body>
 </html>
